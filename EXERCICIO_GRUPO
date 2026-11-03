@@ -1,0 +1,45 @@
+
+
+USE Equipelaranja;
+GO
+
+CREATE TABLE Depositos (
+    Codigo INT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Endereco VARCHAR(200),
+    Capacidade_Maxima INT NOT NULL CHECK (Capacidade_Maxima > 0)
+);
+GO
+
+CREATE TABLE LotesProducao (
+    Codigo INT PRIMARY KEY,
+    Data_Validade DATE NOT NULL,
+    Codigo_Deposito INT,
+    FOREIGN KEY (Codigo_Deposito) REFERENCES Depositos(Codigo)
+);
+GO
+
+CREATE TABLE MovimentacoesEstoque (
+    Codigo INT PRIMARY KEY,
+    Tipo VARCHAR(10) NOT NULL CHECK (Tipo IN ('Entrada', 'Saída')),
+    Data DATE NOT NULL,
+    Quantidade INT NOT NULL CHECK (Quantidade > 0),
+    Codigo_Lote INT,
+    FOREIGN KEY (Codigo_Lote) REFERENCES LotesProducao(Codigo)
+);
+GO
+
+SELECT * FROM Laranja;
+GO
+
+SELECT
+    LotesProducao.Id_Lote,
+    LotesProducao.Produto,
+    LotesProducao.Quantidade,
+    LotesProducao.Data_Validade,
+    Laranja.Nome AS Deposito
+FROM LotesProducao
+INNER JOIN Laranja
+    ON LotesProducao.Id_Deposito = Laranja.Id_Laranja
+WHERE LotesProducao.Data_Validade <= '2026-11-30';
+GO
